@@ -5,18 +5,25 @@ const request = require("request");
 
 // Fetch the telegram token from the config file
 const telegramToken = config.get('telegramToken');
+const url = process.env.NOW_URL;
 
-const bot = new TelegramBot(telegramToken, { polling: true });
+// const bot = new TelegramBot(telegramToken, { polling: true });
+
+const options = { webHook: { port: 443 } };
+
+const bot = new TelegramBot(telegramToken, options);
+
+bot.setWebHook(`${url}/bot${telegramToken}`);
 
 
 bot.on('message', (msg) => {
-    
+
     if (msg.text.toString().toLowerCase().length == 12) {
-    var accountName = msg.text.toString().toLowerCase();
-    let account_balance = checkAccountName(accountName, msg);
-   
-    } 
-        
+        var accountName = msg.text.toString().toLowerCase();
+        let account_balance = checkAccountName(accountName, msg);
+
+    }
+
 });
 
 function checkAccountName(accountName, msg) {
@@ -27,9 +34,9 @@ function checkAccountName(accountName, msg) {
             account_name: accountName
         },
         json: true
-    
+
     };
-    
+
     request(options, function (error, response, body) {
         if (error) throw new Error(error);
         let accountBalance = body.core_liquid_balance;

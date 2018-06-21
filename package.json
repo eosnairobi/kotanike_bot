@@ -1,10 +1,11 @@
 {
   "name": "kotanike-bot",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "app.js",
   "dependencies": {
     "config": "^1.30.0",
+    "node-fetch": "^2.1.2",
     "node-telegram-bot-api": "^0.30.0"
   },
   "devDependencies": {},

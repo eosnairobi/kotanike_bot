@@ -1,9 +1,12 @@
 {
-  "name": "akaunti-bot",
+  "name": "kotanike-bot",
   "version": "0.0.1",
   "description": "",
   "main": "app.js",
-  "dependencies": {},
+  "dependencies": {
+    "config": "^1.30.0",
+    "node-telegram-bot-api": "^0.30.0"
+  },
   "devDependencies": {},
   "scripts": {
     "start": "node app.js",

@@ -73,7 +73,7 @@ function handleMessage(message_in) {
 
                 for (let i = 0; i < strSplit.length; i++) {
                     if (strSplit[i].length == 12) {
-                        let accountName = strSplit[i];
+                        let accountName = strSplit[i].toLowerCase();
                         console.log(accountName);
                         checkAccountName(accountName, id);
 

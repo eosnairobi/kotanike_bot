@@ -26,8 +26,22 @@ bot.on('message', (msg) => {
 
 });
 
+// Message to send on start
+bot.onText(/\/start/, (msg) => {
+
+    bot.sendMessage(msg.chat.id, "Hi and welcome to Kotani by @eosnairobi block producer candidate \n\n Some of the questions you can ask are: \n - balance ha2tsmzqhege \n\n In case you get stuck, you can try /help to show you commands you can try");
+        
+});
+
+// Message to send on start
+bot.onText(/\/help/, (msg) => {
+
+    bot.sendMessage(msg.chat.id, "Some of the questions you can ask are: \n - balance ha2tsmzqhege");
+        
+})
+
 // Checks account balance in the eos api
-function checkAccountName(accountName, id) {
+function checkAccountBalance(accountName, id) {
     var options = {
         method: "POST",
         url: "http://mainnet.eoscanada.com/v1/chain/get_account",
@@ -44,7 +58,7 @@ function checkAccountName(accountName, id) {
         console.log(body.core_liquid_balance);
 
         // Send account balance to user
-        bot.sendMessage(id, `The account balance is `+ accountBalance);
+        bot.sendMessage(id, `The account balance is ` + accountBalance);
 
     });
 }
@@ -57,7 +71,7 @@ function handleMessage(message_in) {
         const intent = firstEntity(entities, 'intent');
         console.log(intent);
 
-        if (!intent) {
+        if (!intent && message.text == !'/help' && message.text == !'/start') {
             bot.sendMessage(id, 'Sorry, try again');
             return;
         }
@@ -75,12 +89,10 @@ function handleMessage(message_in) {
                     if (strSplit[i].length == 12) {
                         let accountName = strSplit[i].toLowerCase();
                         console.log(accountName);
-                        checkAccountName(accountName, id);
+                        checkAccountBalance(accountName, id);
 
                     }
                 }
-
-
         }
     });
 

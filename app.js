@@ -59,7 +59,7 @@ function checkAccountBalance(accountName, id) {
         if (!error && response.statusCode == 200) {
             bot.sendMessage(id, `The account balance is ` + accountBalance);
         } else {
-            bot.sendMessage(id, `The account name you entered is invalid or command entered is incorrect `)
+            bot.sendMessage(id, `The account name you entered is invalid or command entered is incorrect.`)
             .then(() => bot.sendMessage(id, `Try: \n - balance accountname`));
         }
 
@@ -87,7 +87,11 @@ function handleMessage(message_in) {
                 var sentence = message.split(" ");
                 var accountName = sentence[sentence.length - 1];
                 checkAccountBalance(accountName, id);
+                break;
 
+            case 'price':
+                getPrice(id);
+                break;
         }
     });
 
@@ -115,3 +119,25 @@ function queryWit(text, n = 1) {
     ).then(res => res.json());
 }
 
+// Gets prices from coinmarketcap
+function getPrice(id) {
+    // axios.get(`https://api.coinmarketcap.com/v1/ticker/${currency}/`)
+    //     .then(response => {
+    //         let price = response.data[0].price_usd;
+    //         printPrice(currency, price, senderID)
+    //     })
+    //     .catch(error => {
+    //         console.log(error);
+    //     });
+    request('https://api.coinmarketcap.com/v1/ticker/EOS/', function(error, response, body){
+        var data = JSON.parse(body);
+        var price = data[0]["price_usd"];
+        // console.log(b[0]["price_usd"])
+
+
+        // var price = response.data[0].price_usd;
+        // console.log(body['price_usd']+ "body");
+        // console.log(response + "response");
+        bot.sendMessage(id, '1 EOS token is equivalent to ' + price + ' US Dollars');
+    });
+}

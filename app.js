@@ -28,13 +28,13 @@ bot.on('message', (msg) => {
 
 // Message to send on start
 bot.onText(/\/start/, (msg) => {
-    bot.sendMessage(msg.chat.id, "Hi and welcome to Kotani by @eosnairobi block producer candidate").then(() => bot.sendMessage(msg.chat.id, "Some of the questions you can ask are: \n - balance ha2tsmzqhege")).then(() => bot.sendMessage(msg.chat.id, "In case you get stuck, you can try /help to show you commands you can try"));
+    bot.sendMessage(msg.chat.id, "Hi and welcome to Kotani by @eosnairobi block producer candidate").then(() => bot.sendMessage(msg.chat.id, "Some of the questions you can ask are: \n - balance ha2tsmzqhege \n - eos price")).then(() => bot.sendMessage(msg.chat.id, "In case you get stuck, you can try /help to show you commands you can try"));
 });
 
 // Message to send on start
 bot.onText(/\/help/, (msg) => {
 
-    bot.sendMessage(msg.chat.id, "Some of the questions you can ask are: \n - balance ha2tsmzqhege");
+    bot.sendMessage(msg.chat.id, "Some of the questions you can ask are: \n - balance accountname \n - eos price" );
         
 })
 
@@ -74,8 +74,8 @@ function handleMessage(message_in) {
         const intent = firstEntity(entities, 'intent');
         console.log(intent);
 
-        if (!intent && message.text == !'/help' && message.text == !'/start') {
-            bot.sendMessage(id, 'Sorry, try again');
+        if (!intent && message.text != '/help' && message.text != '/start') {
+            bot.sendMessage(id, 'Hi, some of the questions you can ask are: \n - balance accountname \n - eos price');
             return;
         }
 
@@ -121,23 +121,15 @@ function queryWit(text, n = 1) {
 
 // Gets prices from coinmarketcap
 function getPrice(id) {
-    // axios.get(`https://api.coinmarketcap.com/v1/ticker/${currency}/`)
-    //     .then(response => {
-    //         let price = response.data[0].price_usd;
-    //         printPrice(currency, price, senderID)
-    //     })
-    //     .catch(error => {
-    //         console.log(error);
-    //     });
+
     request('https://api.coinmarketcap.com/v1/ticker/EOS/', function(error, response, body){
         var data = JSON.parse(body);
         var price = data[0]["price_usd"];
-        // console.log(b[0]["price_usd"])
-
-
-        // var price = response.data[0].price_usd;
-        // console.log(body['price_usd']+ "body");
-        // console.log(response + "response");
         bot.sendMessage(id, '1 EOS token is equivalent to ' + price + ' US Dollars');
     });
+}
+
+// Gets all the block producer candidates
+function getProducer(){
+
 }

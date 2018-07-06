@@ -54,9 +54,14 @@ function checkAccountBalance(accountName, id) {
         if (error) throw new Error(error);
         let accountBalance = body.core_liquid_balance;
         console.log(body.core_liquid_balance);
+        console.log(body);
 
-        // Send account balance to user
-        bot.sendMessage(id, `The account balance is ` + accountBalance);
+        if (!error && response.statusCode == 200) {
+            bot.sendMessage(id, `The account balance is ` + accountBalance);
+        } else {
+            bot.sendMessage(id, `The account name you entered is invalid or command entered is incorrect `)
+            .then(() => bot.sendMessage(id, `Try: \n - balance accountname`));
+        }
 
     });
 }
@@ -78,19 +83,11 @@ function handleMessage(message_in) {
 
             // if it is asking account balance
             case 'balance':
+                // The last word in the sentence is the account name
+                var sentence = message.split(" ");
+                var accountName = sentence[sentence.length - 1];
+                checkAccountBalance(accountName, id);
 
-                // The word with 12 characters is the account name
-                var strSplit = message.split(" ");
-                console.log(strSplit);
-
-                for (let i = 0; i < strSplit.length; i++) {
-                    if (strSplit[i].length == 12) {
-                        let accountName = strSplit[i].toLowerCase();
-                        console.log(accountName);
-                        checkAccountBalance(accountName, id);
-
-                    }
-                }
         }
     });
 

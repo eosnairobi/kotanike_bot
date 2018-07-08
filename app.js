@@ -27,17 +27,17 @@ bot.on('message', (msg) => {
 
 });
 
-// Message to send on start
-bot.onText(/\/start/, (msg) => {
-    bot.sendMessage(msg.chat.id, "Hi and welcome to Kotani by @eosnairobi block producer candidate").then(() => bot.sendMessage(msg.chat.id, "Some of the questions you can ask are: \n - balance ha2tsmzqhege \n - eos price \n - get producer accountname")).then(() => bot.sendMessage(msg.chat.id, "In case you get stuck, you can try /help to show you commands you can try"));
-});
+// // Message to send on start
+// bot.onText(/\/start/, (msg) => {
+//     bot.sendMessage(msg.chat.id, "Hi and welcome to Kotani by @eosnairobi block producer candidate").then(() => bot.sendMessage(msg.chat.id, "Some of the questions you can ask are: \n - balance ha2tsmzqhege \n - eos price \n - get producer accountname")).then(() => bot.sendMessage(msg.chat.id, "In case you get stuck, you can try /help to show you commands you can try"));
+// });
 
-// Message to send on start
-bot.onText(/\/help/, (msg) => {
+// // Message to send on start
+// bot.onText(/\/help/, (msg) => {
 
-    bot.sendMessage(msg.chat.id, "Some of the questions you can ask are: \n - balance accountname \n - eos price \n - get producer accountname");
+//     bot.sendMessage(msg.chat.id, "Some of the questions you can ask are: \n - balance accountname \n - eos price \n - get producer accountname");
 
-})
+// })
 
 // Checks account balance in the eos api
 function checkAccountBalance(accountName, id) {
@@ -69,16 +69,29 @@ function checkAccountBalance(accountName, id) {
 
 // Get the context
 function handleMessage(message_in) {
+
     let message = message_in.text;
     let id = message_in.chat.id;
-    return queryWit(message).then(({ entities }) => {
-        const intent = firstEntity(entities, 'intent');
-        console.log(intent);
 
-        if (!intent && message.text != '/help' && message.text != '/start') {
-            bot.sendMessage(id, 'Hi, some of the questions you can ask are: \n - balance accountname \n - eos price \n - get producer accountname');
-            return;
+    return queryWit(message).then(({ entities }) => {
+
+        const intent = firstEntity(entities, 'intent');
+        console.log(message);
+        console.log('message stringified is ' + message.toString());
+        var str1 = "/start";
+        var str2 = "/stop";
+        // var help = str1.localeCompare(message);
+        // var start = str2.localeCompare(message);
+        // console.log(start)
+        // console.log(help)
+        if (!intent) {
+            if (!(str1 == message.toString())) {
+                bot.sendMessage(id, 'Hi, some of the questions you can ask are: \n - balance accountname \n - eos price \n - get producer accountname');
+                return;
+            }
         }
+        
+
 
         switch (intent.value) {
 
@@ -101,6 +114,14 @@ function handleMessage(message_in) {
                 var sentence_one = message.split(" ");
                 var producerName = sentence_one[sentence_one.length - 1];
                 getProducerInfo(producerName, id);
+                break;
+
+            case 'help':
+                bot.sendMessage(id, "Some of the questions you can ask are: \n - balance accountname \n - eos price \n - get producer accountname");
+                break;
+
+            case 'start':
+                bot.sendMessage(id, "Hi and welcome to Kotani by @eosnairobi block producer candidate").then(() => bot.sendMessage(id, "Some of the questions you can ask are: \n - balance ha2tsmzqhege \n - eos price \n - get producer accountname")).then(() => bot.sendMessage(id, "In case you get stuck, you can try /help to show you commands you can try"));
                 break;
         }
     });
@@ -144,7 +165,7 @@ function getProducerInfo(accountName, id) {
 
     var options = {
         method: 'POST',
-        url: 'http://mainnet.eoscanada.com/v1/chain/get_producers',
+        url: 'http://api2.eosnairobi.io:8898/v1/chain/get_producers',
         body: { limit: '500', json: 'true' },
         json: true
     };
@@ -161,7 +182,7 @@ function getProducerInfo(accountName, id) {
             var overal_total_votes = body.total_producer_vote_weight;
             var vote_percentage = (total_votes / overal_total_votes) * 100;
 
-            bot.sendMessage(id, `About ` + producer_name + `\n\nUrl: `+ url + `\n\nRank: ` + rank + `\n\nTotal votes: `+ total_votes + `\n\nOveral number of votes: ` + overal_total_votes + `\n\nVote percentage: ` + vote_percentage);
+            bot.sendMessage(id, `About ` + producer_name + `\nUrl: ` + url + `\n\nRank: ` + rank + `\n\nTotal votes: ` + total_votes + `\n\nOveral number of votes: ` + overal_total_votes + `\n\nVote percentage: ` + vote_percentage);
         } else {
             bot.sendMessage(id, `The account name you entered is invalid or command entered is incorrect.`)
                 .then(() => bot.sendMessage(id, `Try: \n - get producer accountname`));
